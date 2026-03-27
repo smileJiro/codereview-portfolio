@@ -1,4 +1,4 @@
-﻿#include "Navigation.h"
+#include "Navigation.h"
 #include "Cell.h"
 #include "GameInstance.h"
 #include <queue>
@@ -357,7 +357,7 @@ _bool CNavigation::Build_CellPath(const _fvector _vStartPos, const _fvector _vTa
         if (idx == iTargetIndex) m_Cells[idx]->ChangeRenderColor({ 0.0f, 1.0f, 0.0f, 1.0f });
         else if (idx == iStartIndex)  m_Cells[idx]->ChangeRenderColor({ 0.0f, 0.0f, 1.0f, 1.0f });
     }
-#endif // test code
+#endif
 
     assert(m_PortalLines.size() == m_CellPath.size());
     if (m_CellPath.size() >= 2) assert(m_PortalLines[0] == -1);
@@ -460,19 +460,19 @@ _bool CNavigation::Build_PortalList()
 //
 // [TriArea2 부호 규약]  (Left-Handed, Y-Up, XZ 평면)
 //   TriArea2(a,b,c) = Cross(b-a, c-a).y
-//   - 양수: c가 (a→b) 기준 왼쪽
-//   - 음수: c가 (a→b) 기준 오른쪽
+//   - 양수: c가 (a→b) 기준 오른쪽
+//   - 음수: c가 (a→b) 기준 왼쪽
 //   - 0   : collinear
 //
 // [Tighten 조건]
-//   LEFT  — portalLeft가 left 레이의 오른쪽(음수)으로 들어오면 조임 시도
+//   LEFT  — portalLeft가 (apex→left) 기준 오른쪽(양수)으로 들어오면 조임 시도
 //     TriArea2(apex, left,  portalLeft) >= -eps
-//     조임 실패 시 (right 레이 바깥, 양수): Right를 코너로 확정
+//     조임 실패 시 (apex→right) 기준 왼쪽(음수), Funnel 바깥: Right를 코너로 확정
 //     TriArea2(apex, right, portalLeft) <= eps  →  바깥
 //
-//   RIGHT — portalRight가 right 레이의 왼쪽(양수)으로 들어오면 조임 시도
+//   RIGHT — portalRight가 (apex→right) 기준 왼쪽(음수)으로 들어오면 조임 시도
 //     TriArea2(apex, right, portalRight) <= eps
-//     조임 실패 시 (left 레이 바깥, 음수): Left를 코너로 확정
+//     조임 실패 시 (apex→left) 기준 오른쪽(양수), Funnel 바깥: Left를 코너로 확정
 //     TriArea2(apex, left,  portalRight) >= -eps  →  바깥
 // ------------------------------------------------------------
 _bool CNavigation::Run_Funnel(const _fvector _vStartPos, const _fvector _vTargetPos, vector<_float3>& _OutWaypoints)
